@@ -1,4 +1,0 @@
-# rust-shell
-
-## LICENSE
-MIT
