@@ -1,1 +1,1 @@
-/home/shiro/rust-shell/target/debug/rust-shell: /home/shiro/rust-shell/src/main.rs
+/home/shiro/rust_shell/target/debug/rust-shell: /home/shiro/rust_shell/src/main.rs

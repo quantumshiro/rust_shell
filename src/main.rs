@@ -54,7 +54,7 @@ fn do_command(command: &str, mut args: &mut Iterator<Item = &str>) -> i32 {
 
     // Exit
     if exit_commands.contains(&command) {
-        eprintln!("logout");
+        eprintln!("logout, Good bye.");
         exit(0);
     }
     // Execute builtin function
