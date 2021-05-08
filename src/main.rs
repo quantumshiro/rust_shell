@@ -3,9 +3,9 @@ use std::env;
 use std::fs;
 use std::io::{self, Write};
 use std::path::Path;
-use std::process::{Command, exit};
+use std::process::{exit, Command};
 
-fn builtin_cd(args: &mut Iterator<Item = &str>) -> i32 {
+fn builtin_cd(args: &mut dyn Iterator<Item = &str>) -> i32 {
     if let Some(path) = args.nth(0) {
         match env::set_current_dir(Path::new(path)) {
             Ok(()) => 0,
@@ -20,7 +20,7 @@ fn builtin_cd(args: &mut Iterator<Item = &str>) -> i32 {
     }
 }
 
-fn builtin_ls(args: &mut Iterator<Item = &str>) -> i32 {
+fn builtin_ls(args: &mut dyn Iterator<Item = &str>) -> i32 {
     let path = match args.nth(0) {
         Some(p) => p,
         None => "./",
@@ -39,18 +39,21 @@ fn builtin_ls(args: &mut Iterator<Item = &str>) -> i32 {
     }
 }
 
-fn do_command(command: &str, mut args: &mut Iterator<Item = &str>) -> i32 {
+fn do_command(command: &str, mut args: &mut dyn Iterator<Item = &str>) -> i32 {
     // List of exit commands
     let exit_commands = vec!["exit", "logout", "bye"];
     // Builtin functions
     // TODO: WTF this dirty type conversion...
-    let builtin_commands: HashMap<_, _> =
-        [
-            ("cd", &builtin_cd as &Fn(&mut Iterator<Item = &str>) -> i32),
-            ("ls", &builtin_ls),
-        ].iter()
-            .cloned()
-            .collect();
+    let builtin_commands: HashMap<_, _> = [
+        (
+            "cd",
+            &builtin_cd as &dyn Fn(&mut dyn Iterator<Item = &str>) -> i32,
+        ),
+        ("ls", &builtin_ls),
+    ]
+    .iter()
+    .cloned()
+    .collect();
 
     // Exit
     if exit_commands.contains(&command) {
